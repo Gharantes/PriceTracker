@@ -1,5 +1,6 @@
 package core.utils
 
+import core.services.games.dto.GameDto
 import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager
@@ -26,43 +27,51 @@ class DatabaseUtils {
         return dbPath.exists()
     }
     private fun createTable() {
-        val path = "/sql/db/create_table_games.sql"
-        execute(path, ::executeUpdate)
+        val path = "/sql/db/create-table-games.sql"
+        executeUpdate(path)
     }
 
-
-    fun <T> execute (
+    fun executeQuery (
+        path: String
+    ): ResultSet? {
+        return execute(path) { st, sql ->
+            st.executeQuery(sql)
+        }
+    }
+    fun executeUpdate (
+        path: String
+    ): Int? {
+        return execute(path) { st, sql ->
+            st.executeUpdate(sql)
+        }
+    }
+    private fun <T> execute(
         path: String,
-        executorType: (Statement, String) -> T
+        statementFn: (Statement, String) -> T?
     ): T? {
         return try {
             val connection = getDriveConnection()
             val statement = connection.createStatement()
-            val result = executorType(
-                statement,
-                resourceUtils.getFileContentFromResources(path)
-            )
+            val sql = resourceUtils.getFileContentFromResources(path)
             statement.close()
             connection.close()
-            result
+            statementFn(statement, sql)
         } catch (e: Exception) {
             e.printStackTrace()
             null
         }
     }
-    fun executeUpdate(
-        statement: Statement,
-        sql: String
-    ) {
-        statement.executeUpdate(sql)
-    }
-    fun executeQuery(
-        statement: Statement,
-        sql: String
-    ): ResultSet {
-        return statement.executeQuery(sql)
-    }
     private fun getDriveConnection(): Connection {
         return DriverManager.getConnection("jdbc:sqlite:$DATABASE_BASE_PATH")
+    }
+    fun <T> resultSetMapper(
+        rs: ResultSet,
+        mapper: (ResultSet) -> T
+    ): MutableList<T> {
+        val results = mutableListOf<T>()
+        while (rs.next()) {
+            results.add(mapper(rs))
+        }
+        return results
     }
 }

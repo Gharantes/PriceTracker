@@ -7,6 +7,7 @@ import compose.App
 import core.utils.DatabaseUtils
 import core.utils.koinModule
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.java.KoinJavaComponent
 
 
@@ -20,7 +21,10 @@ fun main() = application {
     initializeDb()
 
     Window(
-        onCloseRequest = ::exitApplication,
+        onCloseRequest = {
+            stopKoin()
+            exitApplication()
+        },
         state = rememberWindowState(
             size = DpSize(
                 width = WIDTH.dp,

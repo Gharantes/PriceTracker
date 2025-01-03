@@ -6,7 +6,8 @@ import org.koin.java.KoinJavaComponent
 import java.sql.ResultSet
 
 class GamesService {
-    private fun databaseUtils(): DatabaseUtils {
+    private val databaseUtils = getDatabaseUtils()
+    private fun getDatabaseUtils(): DatabaseUtils {
         return KoinJavaComponent
             .getKoin()
             .get<DatabaseUtils>()
@@ -14,7 +15,7 @@ class GamesService {
 
     fun getAllGames(): List<GameDto> {
         val path = "/sql/games/get_all.sql"
-        return databaseUtils().query(path, ::resultSetToGameDto)
+        return databaseUtils.query(path, ::resultSetToGameDto)
     }
 
     private fun resultSetToGameDto(rs: ResultSet): GameDto {

@@ -19,7 +19,11 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation(kotlin("stdlib-jdk8"))
 
+    // Navigation in Kotlin Compose:
     implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
+
+    // To create references and inject classes where necessary
+    implementation("io.insert-koin:koin-core:4.0.1")
 }
 
 compose.desktop {

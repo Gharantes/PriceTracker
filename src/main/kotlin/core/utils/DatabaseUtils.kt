@@ -12,6 +12,7 @@ class DatabaseUtils {
     private val resourceUtils = ResourceUtils()
 
     fun initialize() {
+        println("Was executed")
 //        require(dbExists()) { "Database could not be found." }
 //        createTable()
     }

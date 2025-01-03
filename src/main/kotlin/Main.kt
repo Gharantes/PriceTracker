@@ -5,13 +5,20 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import compose.App
 import core.utils.DatabaseUtils
+import core.utils.koinModule
+import org.koin.core.context.startKoin
+import org.koin.java.KoinJavaComponent
 
 
 private const val WIDTH = 500
 private const val HEIGHT = 720
 
 fun main() = application {
-    DatabaseUtils().initialize()
+    startKoin() {
+        modules(koinModule)
+    }
+    initializeDb()
+
     Window(
         onCloseRequest = ::exitApplication,
         state = rememberWindowState(
@@ -23,4 +30,11 @@ fun main() = application {
     ) {
         App()
     }
+}
+
+private fun initializeDb() {
+    KoinJavaComponent
+        .getKoin()
+        .get<DatabaseUtils>()
+        .initialize()
 }

@@ -1,21 +1,18 @@
 package core.utils
 
-import core.services.games.dto.GameDto
 import java.io.File
-import java.sql.Connection
-import java.sql.DriverManager
-import java.sql.ResultSet
-import java.sql.Statement
+import java.sql.*
 
 private const val DATABASE_BASE_PATH = "game-price-checker.db"
 
 class DatabaseUtils {
     private val resourceUtils = ResourceUtils()
+    var initialized = false
 
     fun initialize() {
-        println("Was executed")
-//        require(dbExists()) { "Database could not be found." }
-//        createTable()
+        require(dbExists()) { "Database could not be found." }
+        createTable()
+        initialized = true
     }
     private fun dbExists(): Boolean {
         val directory = System.getProperty("user.dir")
@@ -28,42 +25,61 @@ class DatabaseUtils {
     }
     private fun createTable() {
         val path = "/sql/db/create-table-games.sql"
-        executeUpdate(path)
+        executeUpdate(path, true)
     }
 
-    fun executeQuery (
-        path: String
-    ): ResultSet? {
-        return execute(path) { st, sql ->
-            st.executeQuery(sql)
+    fun <T> query (
+        path: String,
+        mapper: (ResultSet) -> T,
+    ): List<T> {
+        if (!initialized) {
+            return emptyList()
         }
+        val connection = getDriveConnection()
+        val statement = connection.createStatement()
+        val sql = resourceUtils.getFileContentFromResources(path)
+        val resultSet =  statement.executeQuery(sql)
+        val results = resultSetMapper(resultSet, mapper)
+        statement.close()
+        connection.close()
+        return results.toList()
+    }
+    fun <T> queryForObject(path: String, mapper: (ResultSet) -> T): T? {
+        if (!initialized) {
+            return null
+        }
+        val connection = getDriveConnection()
+        val statement = connection.createStatement()
+        val sql = resourceUtils.getFileContentFromResources(path)
+        val resultSet =  statement.executeQuery(sql)
+        val results = resultSetMapper(resultSet, mapper)
+        statement.close()
+        connection.close()
+        return results.firstOrNull()
     }
     fun executeUpdate (
-        path: String
-    ): Int? {
-        return execute(path) { st, sql ->
-            st.executeUpdate(sql)
-        }
-    }
-    private fun <T> execute(
         path: String,
-        statementFn: (Statement, String) -> T?
-    ): T? {
-        return try {
+        skipValidation: Boolean = false
+    ) {
+        try {
+            if (!skipValidation && !initialized) {
+                return
+            }
             val connection = getDriveConnection()
             val statement = connection.createStatement()
             val sql = resourceUtils.getFileContentFromResources(path)
+            statement.executeUpdate(sql)
             statement.close()
             connection.close()
-            statementFn(statement, sql)
         } catch (e: Exception) {
             e.printStackTrace()
-            null
         }
     }
+
     private fun getDriveConnection(): Connection {
         return DriverManager.getConnection("jdbc:sqlite:$DATABASE_BASE_PATH")
     }
+
     fun <T> resultSetMapper(
         rs: ResultSet,
         mapper: (ResultSet) -> T
@@ -72,6 +88,7 @@ class DatabaseUtils {
         while (rs.next()) {
             results.add(mapper(rs))
         }
+        println(results)
         return results
     }
 }

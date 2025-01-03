@@ -4,18 +4,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import compose.components.buttons.NavBarAddButton
 import compose.components.buttons.SimpleButton
+import compose.models.AddGameViewModel
 
 @Composable
 fun NavigationBar(
-    navController: NavHostController
+    navController: NavHostController,
+    addGameViewModel: AddGameViewModel
 ) {
     var currentRoute by remember { mutableStateOf("all") }
     fun updateRoute(route: String) {
@@ -40,6 +40,7 @@ fun NavigationBar(
                 NavBarAddButton(currentRoute, {
                     updateRoute("add")
                 }, {
+                    addGameViewModel.addGame()
                     updateRoute("all")
                 })
 

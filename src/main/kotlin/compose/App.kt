@@ -9,12 +9,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import compose.components.navigationBar.NavigationBar
+import compose.models.AddGameViewModel
 import compose.pages.add.AddGamePage
 import compose.pages.list.GameListPage
 
 @Composable
 fun App() {
     val navController = rememberNavController()
+
+    val addGameViewModel = AddGameViewModel()
 
     MaterialTheme {
         Column {
@@ -23,14 +26,17 @@ fun App() {
                     GameListPage()
                 }
                 composable("add") {
-                    AddGamePage()
+                    AddGamePage(addGameViewModel)
                 }
                 composable("all") {
                     GameListPage()
                 }
             }
             Spacer(Modifier.weight(1f, true))
-            NavigationBar(navController)
+            NavigationBar(
+                navController,
+                addGameViewModel
+            )
         }
     }
 }

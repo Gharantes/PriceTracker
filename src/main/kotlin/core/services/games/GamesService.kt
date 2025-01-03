@@ -1,6 +1,7 @@
 package core.services.games
 
 import core.services.games.dto.GameDto
+import core.services.games.dto.InsertGameDto
 import core.utils.DatabaseUtils
 import org.koin.java.KoinJavaComponent
 import java.sql.ResultSet
@@ -13,6 +14,10 @@ class GamesService {
             .get<DatabaseUtils>()
     }
 
+    fun addGame(gameDto: InsertGameDto) {
+//        val path = "/sql/games/insert.sql"
+//        return databaseUtils.executeUpdate(path)
+    }
     fun getAllGames(): List<GameDto> {
         val path = "/sql/games/get_all.sql"
         return databaseUtils.query(path, ::resultSetToGameDto)

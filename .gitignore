@@ -11,11 +11,7 @@ game-price-checker.db
 *.class
 
 ### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-.idea/dataSources.xml
+.idea
 *.iws
 *.iml
 *.ipr

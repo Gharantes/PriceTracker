@@ -24,6 +24,9 @@ dependencies {
 
     // To create references and inject classes where necessary
     implementation("io.insert-koin:koin-core:4.0.1")
+
+    // SQLite
+    implementation("org.xerial:sqlite-jdbc:3.47.1.0")
 }
 
 compose.desktop {

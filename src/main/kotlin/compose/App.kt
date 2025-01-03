@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import compose.components.navigationBar.NavigationBar
 import compose.pages.add.AddGamePage
 import compose.pages.list.ListGamePage
 
@@ -19,6 +20,9 @@ fun App() {
     MaterialTheme {
         Column {
             NavHost(navController, startDestination = "all") {
+                composable("deals") {
+                    ListGamePage()
+                }
                 composable("add") {
                     AddGamePage()
                 }
@@ -26,19 +30,7 @@ fun App() {
                     ListGamePage()
                 }
             }
-
-            Row {
-                Button(onClick = {
-                    navController.navigate("add")
-                }) {
-                    Text("Add")
-                }
-                Button(onClick = {
-                    navController.navigate("all")
-                }) {
-                    Text("All")
-                }
-            }
+            NavigationBar(navController)
         }
     }
 }

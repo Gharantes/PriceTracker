@@ -1,27 +1,21 @@
-package compose.components.navButton
+package compose.components.buttons
 
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 
 @Composable
-fun NavButton (
+fun SimpleButton (
     modifier: Modifier,
-    route: String,
     text: String,
-    navController: NavHostController
+    fn: () -> Unit
 ) {
     MaterialTheme {
         Button(
             modifier = modifier,
-            onClick = {
-                navController.navigate(
-                    route = route
-                )
-            }
+            onClick = { fn() }
         ) {
             Text(text = text)
         }

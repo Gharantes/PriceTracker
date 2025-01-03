@@ -4,16 +4,25 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import compose.components.navButton.NavButton
+import compose.components.buttons.NavBarAddButton
+import compose.components.buttons.SimpleButton
 
 @Composable
 fun NavigationBar(
     navController: NavHostController
 ) {
+    var currentRoute by remember { mutableStateOf("all") }
+    fun updateRoute(route: String) {
+        currentRoute = route
+        navController.navigate(currentRoute)
+    }
+
     MaterialTheme {
         BottomAppBar(
             windowInsets = AppBarDefaults.bottomAppBarWindowInsets
@@ -24,9 +33,19 @@ fun NavigationBar(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 val weight40 = Modifier.weight(0.4f)
-                NavButton(weight40, "deals", "Deals", navController)
-                NavButton(Modifier.weight(0.2f), "add", "Add", navController)
-                NavButton(weight40, "all", "All", navController)
+                SimpleButton(weight40,"Deals") {
+                    updateRoute("deals")
+                }
+
+                NavBarAddButton(currentRoute, {
+                    updateRoute("add")
+                }, {
+                    updateRoute("all")
+                })
+
+                SimpleButton(weight40, "All") {
+                    updateRoute("all")
+                }
             }
         }
     }

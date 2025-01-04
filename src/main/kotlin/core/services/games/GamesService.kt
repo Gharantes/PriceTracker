@@ -2,8 +2,10 @@ package core.services.games
 
 import core.services.games.dto.GameDto
 import core.services.games.dto.InsertGameDto
-import core.utils.DatabaseUtils
+import core.utils.database.DatabaseStringType
+import core.utils.database.DatabaseUtils
 import org.koin.java.KoinJavaComponent
+import utility.nullableGetDouble
 import java.sql.ResultSet
 
 class GamesService {
@@ -15,8 +17,26 @@ class GamesService {
     }
 
     fun addGame(gameDto: InsertGameDto) {
-//        val path = "/sql/games/insert.sql"
-//        return databaseUtils.executeUpdate(path)
+        val sql = """
+            INSERT INTO GAMES (name, steam_id, target_price, target_discount) 
+            VALUES (
+            '${gameDto.name}', 
+            ${optionalStringParameter(gameDto.steamId)},
+            ${optionalNumericParameter(gameDto.targetPrice)},
+            ${optionalNumericParameter(gameDto.targetDiscount)}
+        )
+        """.trimIndent()
+        return databaseUtils.update(sql, DatabaseStringType.QUERY)
+    }
+    private fun optionalStringParameter(param: Any?): String {
+        return if (param == null || (param is String && param.isBlank())) {
+            "null"
+        } else {
+            "'$param'"
+        }
+    }
+    private fun optionalNumericParameter(param: Double?): String {
+        return param?.toString() ?: "null"
     }
     fun getAllGames(): List<GameDto> {
         val path = "/sql/games/get_all.sql"
@@ -29,8 +49,8 @@ class GamesService {
             id=rs.getLong("id"),
             name=rs.getString("name"),
             steamId=rs.getString("steam_id"),
-            targetPrice=rs.getDouble("target_price"),
-            targetDiscount=rs.getDouble("target_discount"),
+            targetPrice=rs.nullableGetDouble("target_price"),
+            targetDiscount=rs.nullableGetDouble("target_discount"),
         )
     }
 }

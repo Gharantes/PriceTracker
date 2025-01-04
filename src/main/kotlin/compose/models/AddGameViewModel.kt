@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import core.services.games.GamesService
 import core.services.games.dto.InsertGameDto
 import org.koin.java.KoinJavaComponent
-import utility.toDouble2
+import utility.safeToDouble
 
 class AddGameViewModel : ViewModel() {
     var name by mutableStateOf("")
@@ -16,33 +16,19 @@ class AddGameViewModel : ViewModel() {
     var steamId by mutableStateOf("")
 
     fun addGame() {
-        if (validateFields()) {
-            getGamesService().addGame(
-                InsertGameDto(
-                    name = name,
-                    steamId = steamId,
-                    targetPrice = targetPrice.toDouble2(),
-                    targetDiscount = targetDiscount.toDouble2()
-                )
-            )
+        if (name.isBlank()) {
+            return
         }
-    }
 
-    fun validateFields(): Boolean {
-        return listOf(
-            validateName(),
-            validateTargetPrice(),
-        ).contains(false)
+        getGamesService().addGame(
+            InsertGameDto(
+                name = name,
+                steamId = steamId,
+                targetPrice = targetPrice.safeToDouble(),
+                targetDiscount = targetDiscount.safeToDouble()
+            )
+        )
     }
-    private fun validateName(): Boolean {
-        return name.isNotBlank()
-    }
-    private fun validateTargetPrice(): Boolean {
-        val a = targetPrice.isNotBlank()
-        val b = targetPrice.toDouble2() != null
-        return a && b
-    }
-
 
     private fun getGamesService(): GamesService {
         return KoinJavaComponent

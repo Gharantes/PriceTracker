@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import core.services.games.GamesService
-import core.services.games.dto.InsertGameDto
+import core.services.database.games.GamesService
+import core.services.database.games.dto.InsertGameDto
 import org.koin.java.KoinJavaComponent
 import utility.safeToDouble
 

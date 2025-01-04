@@ -14,14 +14,12 @@ import androidx.compose.ui.unit.dp
 import compose.constants.DarkBackground1
 import compose.constants.DarkBackground2
 import compose.constants.LightText
-import core.services.games.dto.GameDto
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import core.services.DisplayGameDto
+import core.services.DisplayGameSteamInfoDto
 
 @Composable
 fun GameListEntry(
-    item: GameDto,
+    item: DisplayGameDto,
     deleteGame: (Long) -> Unit
 ) {
     var secondaryIsOpen by remember { mutableStateOf(false) }
@@ -58,10 +56,18 @@ fun GameListEntry(
                                 )
                             }
                             if (item.steamId != null) {
-                                Row {
+                                Column {
                                     Text(
                                         color = LightText,
                                         text = "Steam ID: ${item.steamId}"
+                                    )
+                                    Text(
+                                        color = LightText,
+                                        text = "Steam Price: ${item.steamInfo?.finalFormatted}"
+                                    )
+                                    Text(
+                                        color = LightText,
+                                        text = "Steam Discount: ${item.steamInfo?.discountPercent}"
                                     )
                                 }
                             }

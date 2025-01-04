@@ -1,10 +1,14 @@
 package compose
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -20,23 +24,28 @@ fun App() {
     val addGameViewModel = AddGameViewModel()
 
     MaterialTheme {
-        Column {
-            NavHost(navController, startDestination = "all") {
-                composable("deals") {
-                    GameListPage()
+        Surface(
+            color = Color(0xFF121212),
+            elevation = 0.dp
+        ) {
+            Column {
+                NavHost(navController, startDestination = "all") {
+                    composable("deals") {
+                        GameListPage()
+                    }
+                    composable("add") {
+                        AddGamePage(addGameViewModel)
+                    }
+                    composable("all") {
+                        GameListPage()
+                    }
                 }
-                composable("add") {
-                    AddGamePage(addGameViewModel)
-                }
-                composable("all") {
-                    GameListPage()
-                }
+                Spacer(Modifier.weight(1f, true))
+                NavigationBar(
+                    navController,
+                    addGameViewModel
+                )
             }
-            Spacer(Modifier.weight(1f, true))
-            NavigationBar(
-                navController,
-                addGameViewModel
-            )
         }
     }
 }

@@ -38,11 +38,16 @@ class GamesService {
     private fun optionalNumericParameter(param: Double?): String {
         return param?.toString() ?: "null"
     }
+
+
     fun getAllGames(): List<GameDto> {
         val path = "/sql/games/get_all.sql"
         return databaseUtils.query(path, ::resultSetToGameDto)
     }
-
+    fun deleteGame(id: Long) {
+        val query = "DELETE FROM GAMES WHERE id = $id"
+        return databaseUtils.update(query, DatabaseStringType.QUERY)
+    }
     private fun resultSetToGameDto(rs: ResultSet): GameDto {
         println(rs)
         return GameDto(

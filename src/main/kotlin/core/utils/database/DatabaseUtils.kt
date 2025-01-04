@@ -91,7 +91,6 @@ class DatabaseUtils {
         while (rs.next()) {
             results.add(mapper(rs))
         }
-        println(results)
         return results
     }
 }

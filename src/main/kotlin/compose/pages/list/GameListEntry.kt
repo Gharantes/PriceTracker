@@ -1,62 +1,97 @@
 package compose.pages.list
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import compose.constants.DarkBackground1
 import compose.constants.DarkBackground2
 import compose.constants.LightText
 import core.services.games.dto.GameDto
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
-fun GameListEntry(item: GameDto) {
+fun GameListEntry(
+    item: GameDto,
+    deleteGame: (Long) -> Unit
+) {
+    var secondaryIsOpen by remember { mutableStateOf(false) }
+
     MaterialTheme {
-        Surface(
-            color = DarkBackground1,
-            elevation = 10.dp,
-            modifier = Modifier
-        ) {
-            Card(
-                backgroundColor = DarkBackground2,
-                modifier = Modifier.fillMaxWidth()
+        Column {
+            Surface(
+                color = DarkBackground1,
+                elevation = 10.dp,
+                modifier = Modifier
             ) {
-                Row {
-                    Column (
-                        modifier = Modifier.padding(10.dp),
+                Card(
+                    backgroundColor = DarkBackground2,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(10.dp)
                     ) {
-                        Text(
-                            color = LightText,
-                            text = item.name
-                        )
-                        Row {
+                        Column (
+                        ) {
                             Text(
                                 color = LightText,
-                                text = "Target Price: ${item.targetPrice}"
+                                text = item.name
                             )
-                            Text(
-                                color = LightText,
-                                text = "Target Discount: ${item.targetDiscount}"
-                            )
-                        }
-                        if (item.steamId != null) {
                             Row {
                                 Text(
                                     color = LightText,
-                                    text = "Steam ID: ${item.steamId}"
+                                    text = "Target Price: ${item.targetPrice}"
+                                )
+                                Text(
+                                    color = LightText,
+                                    text = "Target Discount: ${item.targetDiscount}"
                                 )
                             }
+                            if (item.steamId != null) {
+                                Row {
+                                    Text(
+                                        color = LightText,
+                                        text = "Steam ID: ${item.steamId}"
+                                    )
+                                }
+                            }
+                        }
+                        Spacer(
+                            modifier = Modifier.weight(1f)
+                        )
+                        Button(onClick = {
+                            secondaryIsOpen = !secondaryIsOpen
+                        }) {
+                            Icon(
+                                if (secondaryIsOpen) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                                contentDescription = null
+                            )
                         }
                     }
                 }
             }
+            if (secondaryIsOpen) {
+                Box (
+                    modifier = Modifier.fillMaxWidth().height(40.dp).background(DarkBackground2)
+                ) {
+                    Button(onClick = {
+                        deleteGame(item.id)
+                    }) {
+                        Icon(Icons.Filled.Delete, contentDescription = null)
+                    }
+                }
+            }
         }
+
     }
 }

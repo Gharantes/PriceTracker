@@ -5,43 +5,42 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import core.services.games.GamesService
-import core.services.games.dto.GameDto
-import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent
+import androidx.navigation.NavHostController
+import compose.models.DeleteGameViewModel
+import compose.models.UpdateGameListViewModel
 
 @Composable
-fun GameListPage () {
-    var listOfGames by remember {
-        mutableStateOf<List<GameDto>>(
-            emptyList()
-        )
+fun GameListPage (
+    gameListPageType: GameListPageType,
+    navHostController: NavHostController
+) {
+    val deleteGameViewModel = DeleteGameViewModel()
+    val updateGameListViewModel = UpdateGameListViewModel()
+
+    fun delete(id: Long) {
+        deleteGameViewModel.deleteGame(id)
+        when (gameListPageType) {
+            GameListPageType.ALL -> navHostController.navigate("all")
+            GameListPageType.DEALS -> navHostController.navigate("deals")
+        }
     }
 
-    val coroutineScope = rememberCoroutineScope()
-    coroutineScope.launch {
-        listOfGames = updateGameList()
-    }
+    updateGameListViewModel.getAll()
+
     MaterialTheme {
         LazyColumn(
             modifier = Modifier.padding(10.dp),
             verticalArrangement = Arrangement.spacedBy(15.dp)
         ){
-            itemsIndexed(listOfGames) { _, item ->
-                GameListEntry(item)
+            itemsIndexed(updateGameListViewModel.listOfGames) { _, item ->
+                GameListEntry(
+                    item,
+                    ::delete,
+                )
             }
         }
     }
-}
-
-fun updateGameList(): List<GameDto> {
-    return KoinJavaComponent
-        .getKoin()
-        .get<GamesService>()
-        .getAllGames()
 }

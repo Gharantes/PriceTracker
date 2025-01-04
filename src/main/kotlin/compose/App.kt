@@ -1,6 +1,5 @@
 package compose
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.MaterialTheme
@@ -16,11 +15,11 @@ import compose.components.navigationBar.NavigationBar
 import compose.models.AddGameViewModel
 import compose.pages.add.AddGamePage
 import compose.pages.list.GameListPage
+import compose.pages.list.GameListPageType
 
 @Composable
 fun App() {
     val navController = rememberNavController()
-
     val addGameViewModel = AddGameViewModel()
 
     MaterialTheme {
@@ -31,13 +30,19 @@ fun App() {
             Column {
                 NavHost(navController, startDestination = "all") {
                     composable("deals") {
-                        GameListPage()
+                        GameListPage(
+                            GameListPageType.DEALS,
+                            navController
+                        )
                     }
                     composable("add") {
                         AddGamePage(addGameViewModel)
                     }
                     composable("all") {
-                        GameListPage()
+                        GameListPage(
+                            GameListPageType.ALL,
+                            navController
+                        )
                     }
                 }
                 Spacer(Modifier.weight(1f, true))

@@ -4,7 +4,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import compose.App
-import core.utils.DatabaseUtils
+import core.utils.database.DatabaseUtils
 import core.utils.koinModule
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin

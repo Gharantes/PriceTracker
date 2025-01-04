@@ -27,6 +27,10 @@ dependencies {
 
     // SQLite
     implementation("org.xerial:sqlite-jdbc:3.47.1.0")
+
+    // Retrofit - Get data from APIs
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 }
 
 compose.desktop {

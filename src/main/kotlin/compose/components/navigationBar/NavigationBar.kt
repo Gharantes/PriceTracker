@@ -33,7 +33,12 @@ fun NavigationBar(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 val weight40 = Modifier.weight(0.4f)
-                SimpleButton(weight40,"Deals") {
+
+                SimpleButton(
+                    weight40,
+                    text = "Deals",
+                    isActive = currentRoute=="deals"
+                ) {
                     updateRoute("deals")
                 }
 
@@ -44,7 +49,11 @@ fun NavigationBar(
                     updateRoute("all")
                 })
 
-                SimpleButton(weight40, "All") {
+                SimpleButton(
+                    weight40,
+                    text="All",
+                    isActive=currentRoute=="all"
+                ) {
                     updateRoute("all")
                 }
             }

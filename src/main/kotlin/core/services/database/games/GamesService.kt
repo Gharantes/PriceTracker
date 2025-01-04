@@ -1,7 +1,7 @@
-package core.services.games
+package core.services.database.games
 
-import core.services.games.dto.GameDto
-import core.services.games.dto.InsertGameDto
+import core.services.database.games.dto.GameDto
+import core.services.database.games.dto.InsertGameDto
 import core.utils.database.DatabaseStringType
 import core.utils.database.DatabaseUtils
 import org.koin.java.KoinJavaComponent
